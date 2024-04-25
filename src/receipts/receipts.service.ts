@@ -77,9 +77,15 @@ export class ReceiptsService {
     });
   }
 
-  async findOneByTableId(id: number) {
+  findOneByTableId(id: number) {
     return this.receiptRepository.findOne({
       where: { table: { id: id } },
+      relations: ['table', 'receiptDetail'],
+    });
+  }
+  findOneByUuid(id: string) {
+    return this.receiptRepository.findOne({
+      where: { uuidI: id },
       relations: ['table', 'receiptDetail'],
     });
   }

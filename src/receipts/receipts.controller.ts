@@ -35,6 +35,11 @@ export class ReceiptsController {
     return this.receiptsService.findOneByTableId(+id);
   }
 
+  @Get('guuid/:id')
+  findOneByUuid(@Param('id') id: string) {
+    return this.receiptsService.findOneByUuid(id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateReceiptDto: UpdateReceiptDto) {
     return this.receiptsService.update(+id, updateReceiptDto);

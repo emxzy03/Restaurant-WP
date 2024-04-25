@@ -1,8 +1,11 @@
+import { CheckMaterial } from 'src/check-materials/entities/check-material.entity';
+import { SalaryDetail } from 'src/salary-details/entities/salary-detail.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -45,6 +48,9 @@ export class Employee {
   @Column()
   sal_rate: number;
 
+  @OneToMany(() => SalaryDetail, (sdt) => sdt.employee)
+  salaryDetail: SalaryDetail;
+
   @CreateDateColumn()
   createdAt?: Date;
 
@@ -53,4 +59,7 @@ export class Employee {
 
   @DeleteDateColumn()
   deletedAt?: Date;
+
+  @OneToMany(() => CheckMaterial, (cm) => cm.employee)
+  checkMaterial: CheckMaterial;
 }

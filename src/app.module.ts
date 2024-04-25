@@ -24,6 +24,16 @@ import { EmployeesModule } from './employees/employees.module';
 import { Receipt } from './receipts/entities/receipt.entity';
 import { Employee } from './employees/entities/employee.entity';
 import { ReceiptDetail } from './receipts/entities/receiptDetail.entity';
+import { MaterailsModule } from './materails/materails.module';
+import { SalarysModule } from './salarys/salarys.module';
+import { SalaryDetailsModule } from './salary-details/salary-details.module';
+import { Materail } from './materails/entities/materail.entity';
+import { Salary } from './salarys/entities/salary.entity';
+import { SalaryDetail } from './salary-details/entities/salary-detail.entity';
+import { CheckMaterialsModule } from './check-materials/check-materials.module';
+import { CheckMaterialDetailsModule } from './check-material-details/check-material-details.module';
+import { CheckMaterial } from './check-materials/entities/check-material.entity';
+import { CheckMaterialDetail } from './check-material-details/entities/check-material-detail.entity';
 
 @Module({
   imports: [
@@ -46,6 +56,11 @@ import { ReceiptDetail } from './receipts/entities/receiptDetail.entity';
         Receipt,
         ReceiptDetail,
         Employee,
+        Materail,
+        Salary,
+        SalaryDetail,
+        CheckMaterial,
+        CheckMaterialDetail,
       ],
       synchronize: true,
     }),
@@ -59,6 +74,11 @@ import { ReceiptDetail } from './receipts/entities/receiptDetail.entity';
     TablesModule,
     ReceiptsModule,
     EmployeesModule,
+    MaterailsModule,
+    SalarysModule,
+    SalaryDetailsModule,
+    CheckMaterialsModule,
+    CheckMaterialDetailsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
