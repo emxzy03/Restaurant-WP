@@ -34,6 +34,14 @@ import { CheckMaterialsModule } from './check-materials/check-materials.module';
 import { CheckMaterialDetailsModule } from './check-material-details/check-material-details.module';
 import { CheckMaterial } from './check-materials/entities/check-material.entity';
 import { CheckMaterialDetail } from './check-material-details/entities/check-material-detail.entity';
+import { CheckinoutModule } from './checkinout/checkinout.module';
+import { Checkinout } from './checkinout/entities/checkinout.entity';
+import { MenuQueuesModule } from './menu-queues/menu-queues.module';
+import { MenuQueue } from './menu-queues/entities/menu-queue.entity';
+import { BillMaterialsModule } from './bill-materials/bill-materials.module';
+import { BillMaterialDetailsModule } from './bill-material-details/bill-material-details.module';
+import { BillMaterial } from './bill-materials/entities/bill-material.entity';
+import { BillMaterialDetail } from './bill-material-details/entities/bill-material-detail.entity';
 
 @Module({
   imports: [
@@ -61,6 +69,10 @@ import { CheckMaterialDetail } from './check-material-details/entities/check-mat
         SalaryDetail,
         CheckMaterial,
         CheckMaterialDetail,
+        Checkinout,
+        MenuQueue,
+        BillMaterial,
+        BillMaterialDetail,
       ],
       synchronize: true,
     }),
@@ -79,6 +91,10 @@ import { CheckMaterialDetail } from './check-material-details/entities/check-mat
     SalaryDetailsModule,
     CheckMaterialsModule,
     CheckMaterialDetailsModule,
+    CheckinoutModule,
+    MenuQueuesModule,
+    BillMaterialsModule,
+    BillMaterialDetailsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

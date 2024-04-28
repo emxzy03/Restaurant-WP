@@ -1,4 +1,6 @@
+import { BillMaterial } from 'src/bill-materials/entities/bill-material.entity';
 import { CheckMaterial } from 'src/check-materials/entities/check-material.entity';
+import { Checkinout } from 'src/checkinout/entities/checkinout.entity';
 import { SalaryDetail } from 'src/salary-details/entities/salary-detail.entity';
 import {
   Column,
@@ -62,4 +64,10 @@ export class Employee {
 
   @OneToMany(() => CheckMaterial, (cm) => cm.employee)
   checkMaterial: CheckMaterial;
+
+  @OneToMany(() => Checkinout, (checkIO) => checkIO.employee)
+  checkInout: Checkinout;
+
+  @OneToMany(() => BillMaterial, (bm) => bm.employee)
+  billMaterial: BillMaterial;
 }

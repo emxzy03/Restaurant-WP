@@ -10,5 +10,6 @@ import { CheckMaterial } from 'src/check-materials/entities/check-material.entit
   imports: [TypeOrmModule.forFeature([Employee, Salary, CheckMaterial])],
   controllers: [EmployeesController],
   providers: [EmployeesService],
+  exports: [EmployeesService],
 })
 export class EmployeesModule {}
