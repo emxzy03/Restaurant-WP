@@ -13,6 +13,7 @@ export class CreateMenuQueueDto {
   receiptId?: number;
   chef?: Employee;
   waitress?: Employee;
+  quatity: number;
   // chef_id?: number;
   // waitress_id?: number;
   createdAt?: Date;

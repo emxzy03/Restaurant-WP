@@ -11,6 +11,7 @@ import {
 import { ReceiptDetail } from './receiptDetail.entity';
 import { Employee } from 'src/employees/entities/employee.entity';
 import { Table } from 'src/tables/entities/table.entity';
+import { MenuQueue } from 'src/menu-queues/entities/menu-queue.entity';
 @Entity()
 export class Receipt {
   @PrimaryGeneratedColumn()
@@ -48,6 +49,10 @@ export class Receipt {
   @Column()
   uuidI?: string;
   // createdDate?: Date
+
+  @OneToMany(() => MenuQueue, (mq) => mq.receipt)
+  menuQueue?: MenuQueue;
+
   @UpdateDateColumn()
   updatedDate?: Date;
   @DeleteDateColumn()

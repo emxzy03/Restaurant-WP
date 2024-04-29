@@ -26,6 +26,9 @@ export class ReceiptDetail {
   @Column()
   total?: number;
 
+  @Column()
+  status: string;
+
   @ManyToOne(() => Receipt, (receipt) => receipt.receiptDetail)
   receipt?: Receipt;
 

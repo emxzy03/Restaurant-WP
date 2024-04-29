@@ -31,6 +31,9 @@ export class Menu {
   @Column()
   status?: string;
 
-  @Column()
+  @Column({
+    length: '128',
+    default: 'no_img_avaliable.jpg',
+  })
   image?: string;
 }

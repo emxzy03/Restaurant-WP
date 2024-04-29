@@ -25,6 +25,11 @@ export class MenuQueuesController {
     return this.menuQueuesService.findAll();
   }
 
+  @Get('/history')
+  findHistory() {
+    return this.menuQueuesService.findMenuHistory();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.menuQueuesService.findOne(+id);

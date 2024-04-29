@@ -23,7 +23,6 @@ export class SalaryDetail {
   emp_rate?: number;
   @Column()
   emp_total?: number;
-
   @ManyToOne(() => Salary, (salary) => salary.salaryDetail)
   salary?: Salary;
   @ManyToOne(() => Employee, (employee) => employee.salaryDetail)

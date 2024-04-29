@@ -7,5 +7,5 @@ export class CreateMenuDto {
   category_id: number;
   categoryName: string; //สำหรับ add, edit
   status: string;
-  image: string;
+  image = 'no_img_avaliable.jpg';
 }

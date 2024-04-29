@@ -26,6 +26,9 @@ export class MenuQueue {
   @Column()
   status: string;
 
+  @Column()
+  quantity: number;
+
   @ManyToOne(() => Menu, (menu) => menu.id)
   menu?: Menu;
   @Column()
@@ -33,7 +36,7 @@ export class MenuQueue {
   @ManyToOne(() => Receipt, (receipt) => receipt.id)
   receipt?: Receipt;
   @Column()
-  receiptId?: number;
+  receipt_Id?: number;
 
   @ManyToOne(() => Employee, (emp) => emp.id)
   chef?: Employee;
