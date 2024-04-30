@@ -31,10 +31,13 @@ export class MenuQueue {
 
   @ManyToOne(() => Menu, (menu) => menu.id)
   menu?: Menu;
+
   @Column()
   menuId?: number;
+
   @ManyToOne(() => Receipt, (receipt) => receipt.id)
   receipt?: Receipt;
+
   @Column()
   receipt_Id?: number;
 

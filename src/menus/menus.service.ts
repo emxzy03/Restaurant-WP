@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { Category } from 'src/categorys/entities/category.entity';
+import { json } from 'stream/consumers';
 
 @Injectable()
 export class MenusService {
@@ -39,6 +40,13 @@ export class MenusService {
     });
   }
 
+  async findByCondition(con: string) {
+    return await this.menuRepository.find({
+      where: { categoryName: con },
+      relations: ['category'],
+    });
+  }
+
   findOne(id: number) {
     const menu = this.menuRepository.findOne({
       where: { id: id },
@@ -52,11 +60,22 @@ export class MenusService {
 
   async update(id: number, updateMenuDto: UpdateMenuDto) {
     const menu = await this.menuRepository.findOneBy({ id: id });
+    const category = await this.categoryRepository.findOne({
+      where: { name: updateMenuDto.categoryName },
+    });
     if (!menu) {
       throw new NotFoundException();
     }
-    const updatedMennu = { ...menu, ...updateMenuDto };
-    return this.menuRepository.save(updatedMennu);
+    if (!updateMenuDto.image) {
+      const updatedMenu = { ...menu, ...updateMenuDto };
+      updatedMenu.image = menu.image;
+      updatedMenu.category = category;
+      return this.menuRepository.save(updatedMenu);
+    }
+    const updatedMennuAndImage = { ...menu, ...updateMenuDto };
+    updatedMennuAndImage.category = category;
+
+    return this.menuRepository.save(updatedMennuAndImage);
   }
 
   async remove(id: number) {
@@ -64,6 +83,6 @@ export class MenusService {
     if (!menu) {
       throw new NotFoundException();
     }
-    return this.menuRepository.softRemove(menu);
+    return this.menuRepository.delete(menu);
   }
 }

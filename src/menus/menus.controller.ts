@@ -45,6 +45,11 @@ export class MenusController {
     return this.menusService.create(createMenuDto);
   }
 
+  @Get('/category/:condition')
+  async findMenuBy(@Param('condition') condition: string) {
+    return await this.menusService.findByCondition(condition);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
@@ -58,7 +63,7 @@ export class MenusController {
     res.sendFile(menu.image, { root: './menu_imgs' });
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('image/:imageFile')
   async getImageByFileName(
     @Param('imageFile') imageFile: string,
@@ -75,7 +80,27 @@ export class MenusController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMenuDto: UpdateMenuDto) {
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './menu_imgs',
+        filename: (req, file, cb) => {
+          const name = uuidv4();
+          return cb(null, name + extname(file.originalname));
+        },
+      }),
+    }),
+  )
+  update(
+    @Param('id') id: string,
+    @Body() updateMenuDto: UpdateMenuDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (file) {
+      updateMenuDto.image = file.filename;
+    } else {
+      updateMenuDto.image = null;
+    }
     return this.menusService.update(+id, updateMenuDto);
   }
 

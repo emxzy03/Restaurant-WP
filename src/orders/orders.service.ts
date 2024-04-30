@@ -72,6 +72,6 @@ export class OrdersService {
 
   async remove(id: number) {
     const order = await this.ordersRepository.findOneBy({ id: id });
-    return this.ordersRepository.softRemove(order);
+    return this.ordersRepository.delete(order);
   }
 }

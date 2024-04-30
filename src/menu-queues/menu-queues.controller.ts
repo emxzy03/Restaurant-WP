@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { MenuQueuesService } from './menu-queues.service';
 import { CreateMenuQueueDto } from './dto/create-menu-queue.dto';
@@ -30,9 +31,29 @@ export class MenuQueuesController {
     return this.menuQueuesService.findMenuHistory();
   }
 
+  @Get('/serv')
+  findMenuQueueServ() {
+    return this.menuQueuesService.findMenuQueueServ();
+  }
+
+  @Get('/serv/:num')
+  findMenuQueueServByTableNum(@Param('num') num: string) {
+    return this.menuQueuesService.findMenuQueueServByTableNum(+num);
+  }
+
+  @Get('/category/:condition')
+  async findMenuBy(@Param('condition') condition: number) {
+    return await this.menuQueuesService.findByConditionId(+condition);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.menuQueuesService.findOne(+id);
+  }
+
+  @Patch(':id/status')
+  updateMQStatus(@Param('id') id: string, @Query('status') status: string) {
+    return this.menuQueuesService.updateStatusMQ(+id, status);
   }
 
   @Patch(':id')

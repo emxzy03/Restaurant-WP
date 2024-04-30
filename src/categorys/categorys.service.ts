@@ -23,8 +23,15 @@ export class CategorysService {
     return this.categoryRepository.findBy({ id: id });
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    const category = await this.categoryRepository.findOne({
+      where: { id: id },
+    });
+    const cate = new Category();
+    cate.id = category.id;
+    cate.name = updateCategoryDto.name;
+
+    return this.categoryRepository.save(cate);
   }
 
   remove(id: number) {

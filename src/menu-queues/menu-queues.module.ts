@@ -5,9 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MenuQueue } from './entities/menu-queue.entity';
 import { Receipt } from 'src/receipts/entities/receipt.entity';
 import { ReceiptDetail } from 'src/receipts/entities/receiptDetail.entity';
+import { Table } from 'src/tables/entities/table.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MenuQueue, Receipt, ReceiptDetail])],
+  imports: [
+    TypeOrmModule.forFeature([MenuQueue, Receipt, ReceiptDetail, Table]),
+  ],
   controllers: [MenuQueuesController],
   providers: [MenuQueuesService],
 })

@@ -1,5 +1,8 @@
+import { Table } from 'typeorm';
+
 export class CreateReceiptDto {
-  table_id?: number;
+  table: Table;
+  table_id: number;
 
   date?: Date;
 
