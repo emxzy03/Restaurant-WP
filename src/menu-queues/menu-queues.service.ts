@@ -1,7 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateMenuQueueDto } from './dto/create-menu-queue.dto';
-import { Repository } from 'typeorm';
+import {
+  CreateCountMenuQueueDto,
+  CreateMenuQueueDto,
+} from './dto/create-menu-queue.dto';
+import { In, Repository } from 'typeorm';
 import { MenuQueue } from './entities/menu-queue.entity';
 import { UpdateMenuQueueDto } from './dto/update-menu-queue.dto';
 import { Receipt } from 'src/receipts/entities/receipt.entity';
@@ -29,6 +32,54 @@ export class MenuQueuesService {
     return this.menuQueueRepository.find({
       relations: ['chef', 'receipt', 'receipt.table', 'waitress'],
     });
+  }
+
+  async countMenuQueue() {
+    const table: Table[] = await this.tableRepository.find({
+      where: {
+        receipt: {
+          status: 'รอทำ',
+        },
+      },
+    });
+
+    const countList: CreateCountMenuQueueDto[] = [];
+    for (const item of table) {
+      const receipt = await this.receiptRepository.findOne({
+        where: {
+          table: {
+            id: item.id,
+          },
+          status: 'รอทำ',
+        },
+      }); //receipt of table
+
+      const serveCount = await this.menuQueueRepository.count({
+        where: {
+          receipt: {
+            id: receipt.id,
+          },
+          status: In(['รอทำ', 'กำลังทำ']),
+        },
+      });
+
+      const servedCount = await this.menuQueueRepository.count({
+        where: {
+          receipt: {
+            id: receipt.id,
+          },
+          status: 'เสร็จสิ้น',
+        },
+      });
+
+      const count = new CreateCountMenuQueueDto();
+      count.tableNumber = item.num;
+      count.serve = serveCount;
+      count.served = servedCount;
+
+      countList.push(count);
+    }
+    return countList;
   }
 
   async findByConditionId(con: number) {
@@ -74,6 +125,12 @@ export class MenuQueuesService {
     return this.menuQueueRepository.findOne({
       where: { id: id },
       relations: ['chef', 'receipt', 'receipt.table', 'waitress'],
+    });
+  }
+  findOneTableQueueServe(id: number) {
+    return this.menuQueueRepository.find({
+      where: { id: id },
+      relations: ['receipt'],
     });
   }
 

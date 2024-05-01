@@ -41,6 +41,15 @@ export class MenuQueuesController {
     return this.menuQueuesService.findMenuQueueServByTableNum(+num);
   }
 
+  @Get('/serv-count')
+  findCountMenuQueue() {
+    return this.menuQueuesService.countMenuQueue();
+  }
+  @Get('/menu-serv/:id')
+  findOneMenuInTable(@Param('id') id: string) {
+    return this.menuQueuesService.findOneTableQueueServe(+id);
+  }
+
   @Get('/category/:condition')
   async findMenuBy(@Param('condition') condition: number) {
     return await this.menuQueuesService.findByConditionId(+condition);
