@@ -30,7 +30,7 @@ export class Receipt {
   received?: number;
   @Column()
   change?: number;
-  @Column()
+  @Column({ default: 'รอทำ' })
   status?: string;
   @Column()
   payment?: string;

@@ -7,10 +7,18 @@ import { Employee } from 'src/employees/entities/employee.entity';
 import { ReceiptDetail } from './entities/receiptDetail.entity';
 import { Menu } from 'src/menus/entities/menu.entity';
 import { Table } from 'src/tables/entities/table.entity';
+import { MenuQueue } from 'src/menu-queues/entities/menu-queue.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Receipt, ReceiptDetail, Employee, Menu, Table]),
+    TypeOrmModule.forFeature([
+      Receipt,
+      ReceiptDetail,
+      Employee,
+      Menu,
+      Table,
+      MenuQueue,
+    ]),
   ],
   controllers: [ReceiptsController],
   providers: [ReceiptsService],

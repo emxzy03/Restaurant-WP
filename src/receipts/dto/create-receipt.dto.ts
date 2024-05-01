@@ -1,7 +1,8 @@
-import { Table } from 'typeorm';
+import { Table } from 'src/tables/entities/table.entity';
 
 export class CreateReceiptDto {
   table: Table;
+
   table_id: number;
 
   date?: Date;
@@ -28,11 +29,15 @@ export class CreateReceiptDto {
 }
 
 export class CreateReceiptDetailDto {
-  menu_id: number;
-  quantity: number;
+  id?: number;
   name?: string;
-  // receipt_id: number;
-  status: string;
+  quantity: number;
   price?: number;
   total?: number;
+  // receipt?: Receipt;
+  // menu?: Menu;
+  menuId?: number;
+  createdDate?: Date;
+  updatedDate?: Date;
+  deletedDate?: Date;
 }

@@ -24,7 +24,14 @@ export class MenuQueuesService {
     private receiptDetailRepository: Repository<ReceiptDetail>,
   ) {}
 
-  create(createMenuQueueDto: CreateMenuQueueDto) {
+  async create(createMenuQueueDto: CreateMenuQueueDto) {
+    const receipt = await this.receiptRepository.findOne({
+      where: { id: createMenuQueueDto.receipt.id },
+    });
+    if (!receipt) {
+      throw new NotFoundException();
+    }
+
     return this.menuQueueRepository.save(createMenuQueueDto);
   }
 
@@ -59,7 +66,6 @@ export class MenuQueuesService {
           receipt: {
             id: receipt.id,
           },
-          status: In(['รอทำ', 'กำลังทำ']),
         },
       });
 

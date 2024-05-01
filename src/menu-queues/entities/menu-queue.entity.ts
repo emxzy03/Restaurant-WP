@@ -23,7 +23,7 @@ export class MenuQueue {
   @Column()
   note: string;
 
-  @Column()
+  @Column({ default: 'รอทำ' })
   status: string;
 
   @Column()

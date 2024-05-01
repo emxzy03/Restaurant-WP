@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Receipt } from './entities/receipt.entity';
-import { getManager, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ReceiptDetail } from './entities/receiptDetail.entity';
 import { Employee } from 'src/employees/entities/employee.entity';
 import { Menu } from 'src/menus/entities/menu.entity';
 import { CreateReceiptDto } from './dto/create-receipt.dto';
 import { Table } from 'src/tables/entities/table.entity';
 import { UpdateReceiptDto } from './dto/update-receipt.dto';
-import { query } from 'express';
+import { MenuQueue } from 'src/menu-queues/entities/menu-queue.entity';
 
 @Injectable()
 export class ReceiptsService {
@@ -23,31 +23,64 @@ export class ReceiptsService {
     private menuRepository: Repository<Menu>,
     @InjectRepository(Table)
     private tableRepoeitory: Repository<Table>,
+    @InjectRepository(MenuQueue)
+    private menuQueueRepoeitory: Repository<MenuQueue>,
   ) {}
 
+  // async create(createReceiptDto: CreateReceiptDto) {
+  //   const table = await this.tableRepoeitory.findOneBy({
+  //     id: createReceiptDto.table_id,
+  //   });
+  //   if (!table) {
+  //     throw new Error('Table ID not found');
+  //   }
+  //   const receipt = new Receipt();
+  //   receipt.table = table;
+  //   receipt.subtotal = createReceiptDto.subtotal;
+  //   receipt.discount = createReceiptDto.discount;
+  //   receipt.total = createReceiptDto.total;
+  //   receipt.received = createReceiptDto.received;
+  //   receipt.change = createReceiptDto.change;
+  //   receipt.status = createReceiptDto.status;
+  //   await this.receiptRepository.save(receipt);
+
+  //   for (const od of createReceiptDto.receiptDetail) {
+  //     const receiptDetail = new ReceiptDetail();
+  //     receiptDetail.quantity = od.quantity;
+  //     receiptDetail.menu = await this.menuRepository.findOneBy({
+  //       id: od.menu_id,
+  //     });
+  //     if (!receiptDetail.menu) {
+  //       throw new Error('Menu ID not found');
+  //     }
+  //     receiptDetail.name = receiptDetail.menu.name;
+  //     receiptDetail.price = receiptDetail.menu.price;
+  //     receiptDetail.total = receiptDetail.price * receiptDetail.quantity;
+  //     receiptDetail.receipt = receipt; // อ้างกลับ
+  //     await this.receiptDetailRepository.save(receiptDetail);
+  //     receipt.subtotal += receiptDetail.total;
+  //     // receipt.total = receipt.total - receipt.discount;
+  //   }
+  //   // await this.receiptRepoeitory.save(receipt);
+  //   return this.receiptRepository.save(receipt);
+  // }
+
   async create(createReceiptDto: CreateReceiptDto) {
-    const table = await this.tableRepoeitory.findOneBy({
-      id: createReceiptDto.table_id,
+    const table = await this.tableRepoeitory.findOne({
+      where: { id: createReceiptDto.table.id },
     });
     if (!table) {
-      throw new Error('Table ID not found');
+      throw new Error('Table Id not found');
     }
-
     const receipt = new Receipt();
     receipt.table = table;
-    receipt.subtotal = createReceiptDto.subtotal;
-    receipt.discount = createReceiptDto.discount;
-    receipt.total = createReceiptDto.total;
-    receipt.received = createReceiptDto.received;
-    receipt.change = createReceiptDto.change;
-    receipt.status = createReceiptDto.status;
     await this.receiptRepository.save(receipt);
 
     for (const od of createReceiptDto.receiptDetail) {
       const receiptDetail = new ReceiptDetail();
       receiptDetail.quantity = od.quantity;
       receiptDetail.menu = await this.menuRepository.findOneBy({
-        id: od.menu_id,
+        id: od.menuId,
       });
       if (!receiptDetail.menu) {
         throw new Error('Menu ID not found');
@@ -59,8 +92,17 @@ export class ReceiptsService {
       await this.receiptDetailRepository.save(receiptDetail);
       receipt.subtotal += receiptDetail.total;
       // receipt.total = receipt.total - receipt.discount;
+
+      // POST MenuQueue
+      const menuQueue = new MenuQueue();
+      menuQueue.menu = receiptDetail.menu;
+      menuQueue.name = receiptDetail.name;
+      menuQueue.quantity = receiptDetail.quantity;
+      menuQueue.menuId = receiptDetail.menu.id;
+      menuQueue.receipt = receiptDetail.receipt;
+      await this.menuQueueRepoeitory.save(menuQueue);
     }
-    // await this.receiptRepoeitory.save(receipt);
+    // await this.menuQueueRepoeitory.save()
     return this.receiptRepository.save(receipt);
   }
 
