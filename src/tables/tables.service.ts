@@ -3,13 +3,19 @@ import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Table } from './entities/table.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
+import { MenuQueue } from 'src/menu-queues/entities/menu-queue.entity';
+import { Receipt } from 'src/receipts/entities/receipt.entity';
 
 @Injectable()
 export class TablesService {
   constructor(
     @InjectRepository(Table)
     private tableRepository: Repository<Table>,
+    @InjectRepository(MenuQueue)
+    private menuQueueRepository: Repository<MenuQueue>,
+    @InjectRepository(Receipt)
+    private receiptRepository: Repository<Receipt>,
   ) {}
   create(createTableDto: CreateTableDto) {
     return this.tableRepository.save(createTableDto);
@@ -17,6 +23,22 @@ export class TablesService {
 
   findAll() {
     return this.tableRepository.find();
+  }
+
+  async findMenuQueueInReceiptOnTable(id: number) {
+    // const menuQ: MenuQueue[] = [];
+    const table = await this.tableRepository.findOne({ where: { id: id } });
+    const receipt = await this.receiptRepository.findOne({
+      where: { table: { id: table.id }, status: 'รอทำ' },
+    });
+    if (!receipt) {
+      return [];
+    }
+    return await this.menuQueueRepository.find({
+      where: {
+        receipt: { table: { id: receipt.id } },
+      },
+    });
   }
 
   findOne(id: number) {

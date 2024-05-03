@@ -30,6 +30,11 @@ export class TablesController {
     return this.tablesService.findOne(+id);
   }
 
+  @Get('/receipt-on/:id')
+  findOrderInReceiptOnTable(@Param('id') id: string) {
+    return this.tablesService.findMenuQueueInReceiptOnTable(+id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTableDto: UpdateTableDto) {
     return this.tablesService.update(+id, updateTableDto);

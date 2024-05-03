@@ -39,11 +39,14 @@ export class ReceiptsController {
   findOneByUuid(@Param('id') id: string) {
     return this.receiptsService.findOneByUuid(id);
   }
-
-  @Patch(':id')
+  @Patch('/receipt-detail/:id')
   update(@Param('id') id: string, @Body() updateReceiptDto: UpdateReceiptDto) {
-    return this.receiptsService.update(+id, updateReceiptDto);
+    return this.receiptsService.updateReceiptDetail(+id, updateReceiptDto);
   }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateReceiptDto: UpdateReceiptDto) {
+  //   return this.receiptsService.update(+id, updateReceiptDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

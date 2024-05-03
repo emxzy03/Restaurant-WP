@@ -14,6 +14,7 @@ import {
 export class Table {
   @PrimaryGeneratedColumn()
   id?: number;
+
   @Column()
   num: number;
 

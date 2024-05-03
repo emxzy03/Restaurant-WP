@@ -20,15 +20,15 @@ export class Receipt {
   table?: Table;
   @CreateDateColumn()
   date?: Date;
-  @Column()
+  @Column({ default: 0 })
   subtotal?: number;
-  @Column()
+  @Column({ default: 0 })
   discount?: number;
-  @Column()
+  @Column({ default: 0 })
   total?: number;
-  @Column()
+  @Column({ default: 0 })
   received?: number;
-  @Column()
+  @Column({ default: 0 })
   change?: number;
   @Column({ default: 'รอทำ' })
   status?: string;

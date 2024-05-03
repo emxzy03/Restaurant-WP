@@ -11,7 +11,7 @@ export class CreateMenuQueueDto {
   menu?: Menu;
   menuId?: number;
   receipt?: Receipt;
-  receiptId?: number;
+  receipt_id?: number; //if error change receiptId
   chef?: Employee;
   waitress?: Employee;
   quatity: number;

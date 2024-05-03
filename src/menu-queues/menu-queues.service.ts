@@ -32,7 +32,11 @@ export class MenuQueuesService {
       throw new NotFoundException();
     }
 
-    return this.menuQueueRepository.save(createMenuQueueDto);
+    const menuQueue = createMenuQueueDto;
+    menuQueue.receipt = receipt;
+    menuQueue.receipt_id = receipt.id;
+
+    return this.menuQueueRepository.save(menuQueue);
   }
 
   async findAll() {
@@ -151,7 +155,7 @@ export class MenuQueuesService {
   async update(id: number, updateMenuQueueDto: UpdateMenuQueueDto) {
     const menu = await this.menuQueueRepository.findOne({ where: { id: id } });
     const receipt = await this.receiptDetailRepository.findOne({
-      where: { id: updateMenuQueueDto.receiptId },
+      where: { id: updateMenuQueueDto.receipt.id },
     });
     const menuQueueUpdate = { ...menu, updateMenuQueueDto };
     menuQueueUpdate.receipt = receipt;

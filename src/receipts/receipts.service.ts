@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Receipt } from './entities/receipt.entity';
 import { Repository } from 'typeorm';
@@ -17,8 +17,6 @@ export class ReceiptsService {
     private receiptRepository: Repository<Receipt>,
     @InjectRepository(ReceiptDetail)
     private receiptDetailRepository: Repository<ReceiptDetail>,
-    @InjectRepository(Employee)
-    private employeeRepoeitory: Repository<Employee>,
     @InjectRepository(Menu)
     private menuRepository: Repository<Menu>,
     @InjectRepository(Table)
@@ -94,16 +92,17 @@ export class ReceiptsService {
       // receipt.total = receipt.total - receipt.discount;
 
       // POST MenuQueue
-      const menuQueue = new MenuQueue();
-      menuQueue.menu = receiptDetail.menu;
-      menuQueue.name = receiptDetail.name;
-      menuQueue.quantity = receiptDetail.quantity;
-      menuQueue.menuId = receiptDetail.menu.id;
-      menuQueue.receipt = receiptDetail.receipt;
-      await this.menuQueueRepoeitory.save(menuQueue);
+      // const menuQueue = new MenuQueue();
+      // menuQueue.menu = receiptDetail.menu;
+      // menuQueue.name = receiptDetail.name;
+      // menuQueue.quantity = receiptDetail.quantity;
+      // menuQueue.menuId = receiptDetail.menu.id;
+      // menuQueue.receipt = receiptDetail.receipt;
+      // await this.menuQueueRepoeitory.save(menuQueue);
     }
     // await this.menuQueueRepoeitory.save()
-    return this.receiptRepository.save(receipt);
+
+    return await this.receiptRepository.save(receipt);
   }
 
   findAll() {
@@ -132,8 +131,26 @@ export class ReceiptsService {
     });
   }
 
-  update(id: number, updateReceiptDto: UpdateReceiptDto) {
-    return `This action updates a #${id} receipt`;
+  async updateReceiptDetail(id: number, updateReceiptDto: UpdateReceiptDto) {
+    const receipt = await this.receiptRepository.findOne({ where: { id: id } });
+    if (!receipt) {
+      throw new NotFoundException();
+    }
+    // console.log('receipt => ', receipt);
+    for (const rd of updateReceiptDto.receiptDetail) {
+      const receiptDetail = new ReceiptDetail();
+      receiptDetail.quantity = rd.quantity;
+      receiptDetail.menu = await this.menuRepository.findOneBy({
+        id: rd.menuId,
+      });
+      receiptDetail.name = receiptDetail.menu.name;
+      receiptDetail.price = receiptDetail.menu.price;
+      receiptDetail.total = receiptDetail.price * receiptDetail.quantity;
+      receiptDetail.receipt = receipt;
+      await this.receiptDetailRepository.save(receiptDetail);
+      receipt.subtotal += receiptDetail.total;
+    }
+    return await this.receiptRepository.save(receipt);
   }
 
   remove(id: number) {
