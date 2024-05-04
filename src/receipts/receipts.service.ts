@@ -25,44 +25,6 @@ export class ReceiptsService {
     private menuQueueRepoeitory: Repository<MenuQueue>,
   ) {}
 
-  // async create(createReceiptDto: CreateReceiptDto) {
-  //   const table = await this.tableRepoeitory.findOneBy({
-  //     id: createReceiptDto.table_id,
-  //   });
-  //   if (!table) {
-  //     throw new Error('Table ID not found');
-  //   }
-  //   const receipt = new Receipt();
-  //   receipt.table = table;
-  //   receipt.subtotal = createReceiptDto.subtotal;
-  //   receipt.discount = createReceiptDto.discount;
-  //   receipt.total = createReceiptDto.total;
-  //   receipt.received = createReceiptDto.received;
-  //   receipt.change = createReceiptDto.change;
-  //   receipt.status = createReceiptDto.status;
-  //   await this.receiptRepository.save(receipt);
-
-  //   for (const od of createReceiptDto.receiptDetail) {
-  //     const receiptDetail = new ReceiptDetail();
-  //     receiptDetail.quantity = od.quantity;
-  //     receiptDetail.menu = await this.menuRepository.findOneBy({
-  //       id: od.menu_id,
-  //     });
-  //     if (!receiptDetail.menu) {
-  //       throw new Error('Menu ID not found');
-  //     }
-  //     receiptDetail.name = receiptDetail.menu.name;
-  //     receiptDetail.price = receiptDetail.menu.price;
-  //     receiptDetail.total = receiptDetail.price * receiptDetail.quantity;
-  //     receiptDetail.receipt = receipt; // อ้างกลับ
-  //     await this.receiptDetailRepository.save(receiptDetail);
-  //     receipt.subtotal += receiptDetail.total;
-  //     // receipt.total = receipt.total - receipt.discount;
-  //   }
-  //   // await this.receiptRepoeitory.save(receipt);
-  //   return this.receiptRepository.save(receipt);
-  // }
-
   async create(createReceiptDto: CreateReceiptDto) {
     const table = await this.tableRepoeitory.findOne({
       where: { id: createReceiptDto.table.id },
@@ -119,16 +81,36 @@ export class ReceiptsService {
   }
 
   findOneByTableId(id: number) {
-    return this.receiptRepository.findOne({
-      where: { table: { id: id } },
-      relations: ['table', 'receiptDetail'],
-    });
+    return this.receiptRepository
+      .createQueryBuilder('receipt')
+      .andWhere('table.id = :id', { id: id })
+      .andWhere('receipt.status NOT IN (:...statuses)', {
+        statuses: ['เสร็จสิ้น'],
+      })
+      .leftJoinAndSelect('receipt.table', 'table')
+      .leftJoinAndSelect('receipt.receiptDetail', 'receiptDetail')
+      .getOne();
   }
   findOneByUuid(id: string) {
     return this.receiptRepository.findOne({
       where: { uuidI: id },
       relations: ['table', 'receiptDetail'],
     });
+  }
+
+  async update(id: number, updateReceiptDto: UpdateReceiptDto) {
+    const receipt = await this.receiptRepository.findOne({ where: { id: id } });
+    if (!receipt) {
+      throw new NotFoundException();
+    }
+
+    receipt.discount = updateReceiptDto.discount;
+    receipt.total = updateReceiptDto.total;
+    receipt.received = updateReceiptDto.received;
+    receipt.empid = updateReceiptDto.empid;
+    receipt.payment = updateReceiptDto.payment;
+    receipt.status = updateReceiptDto.status;
+    return this.receiptRepository.save(receipt);
   }
 
   async updateReceiptDetail(id: number, updateReceiptDto: UpdateReceiptDto) {

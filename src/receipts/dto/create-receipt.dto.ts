@@ -21,7 +21,7 @@ export class CreateReceiptDto {
 
   payment?: string;
 
-  employee_id: number;
+  empid: number;
 
   receiptDetail?: CreateReceiptDetailDto[];
 

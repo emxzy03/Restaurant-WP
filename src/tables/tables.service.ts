@@ -26,9 +26,8 @@ export class TablesService {
   }
 
   async findMenuQueueInReceiptOnTable(id: number) {
-    // const menuQ: MenuQueue[] = [];
     const table = await this.tableRepository.findOne({ where: { id: id } });
-    const receipt = await this.receiptRepository.findOne({
+    const receipt = await this.receiptRepository.find({
       where: { table: { id: table.id }, status: 'รอทำ' },
     });
     if (!receipt) {
@@ -36,7 +35,7 @@ export class TablesService {
     }
     return await this.menuQueueRepository.find({
       where: {
-        receipt: { table: { id: receipt.id } },
+        receipt: { id: receipt[0].id },
       },
     });
   }

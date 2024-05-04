@@ -43,6 +43,14 @@ export class ReceiptsController {
   update(@Param('id') id: string, @Body() updateReceiptDto: UpdateReceiptDto) {
     return this.receiptsService.updateReceiptDetail(+id, updateReceiptDto);
   }
+
+  @Patch('/:id')
+  updateReceipt(
+    @Param('id') id: string,
+    @Body() updateReceiptDto: UpdateReceiptDto,
+  ) {
+    return this.receiptsService.update(+id, updateReceiptDto);
+  }
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateReceiptDto: UpdateReceiptDto) {
   //   return this.receiptsService.update(+id, updateReceiptDto);
